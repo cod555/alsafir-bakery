@@ -245,6 +245,32 @@ footer{background:var(--brown);color:#d8c2a3;text-align:center;padding:36px 0 10
 .wa-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 24px rgba(37,211,102,.55)}
 .wa-btn:disabled{background:#b9c7bd;box-shadow:none;cursor:not-allowed}
 
+/* ---------- Whish Pay ---------- */
+.pay-label{font-size:.8rem;font-weight:600;margin:2px 0 5px}
+.mode-btn .wh{display:inline-block;background:#e30613;color:#fff;font-weight:800;font-family:Poppins,sans-serif;border-radius:8px;padding:0 8px;line-height:1.5;font-size:.8rem}
+.whish-btn{position:relative;overflow:hidden;width:100%;background:linear-gradient(135deg,#ff2d2d,#e30613 55%,#b8000c);color:#fff;padding:12px;border-radius:50px;font-weight:600;font-size:.95rem;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 18px rgba(227,6,19,.4);transition:transform .25s,box-shadow .25s}
+.whish-logo{background:#fff;color:#e30613;font-family:Poppins,sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.02em;border-radius:10px;padding:1px 10px;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.whish-btn::after{content:"";position:absolute;inset-block:0;inset-inline-start:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:inset-inline-start .7s ease}
+@media (hover:hover){
+  .whish-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(227,6,19,.55)}
+  .whish-btn:hover::after{inset-inline-start:130%}
+  .whish-btn:hover .whish-logo{transform:scale(1.15) rotate(-6deg)}
+}
+.whish-btn:active .whish-logo{transform:scale(1.15) rotate(-6deg)}
+.whish-btn.disabled{background:#d9b5b5;box-shadow:none;cursor:not-allowed}
+.whish-btn.disabled .whish-logo{color:#c9a0a0}
+.whish-hint{font-size:.78rem;color:var(--brown-soft);background:#fff1f1;border:1px dashed #f2a0a0;border-radius:12px;padding:7px 10px;margin-bottom:8px;line-height:1.45}
+.whish-hint a{color:#e30613;font-weight:600;text-decoration:underline;white-space:nowrap}
+/* ---------- Currency switch ---------- */
+.actions{display:flex;align-items:center;gap:10px}
+.cur-switch{display:flex;background:var(--cream-2);border-radius:20px;padding:3px;direction:ltr}
+.cur-opt{min-width:38px;padding:5px 9px;border-radius:16px;font-family:'Cairo','Poppins',sans-serif;font-weight:700;font-size:.82rem;color:var(--brown-soft);line-height:1.2;transition:.25s}
+.cur-opt[aria-pressed="true"]{background:var(--brown);color:var(--gold);box-shadow:0 2px 8px rgba(58,32,19,.25)}
+.total-alt{text-align:end;font-size:.82rem;font-weight:600;color:var(--brown-soft);margin:-8px 0 10px}
+.total-alt b{color:var(--brown)}
+.logo strong{white-space:nowrap}
+@media(max-width:420px){.logo small{display:none}.logo .fire{font-size:1.2rem}.logo{gap:6px}.logo strong{font-size:1.1rem}}
+@media(max-width:380px){.lang-btn{padding:5px 10px;margin-inline-end:6px}.cur-opt{min-width:32px;padding:5px 7px}.actions{gap:6px}}
 /* ---------- Toast ---------- */
 .lang-btn{font-family:var(--font-ar);font-weight:700;padding:6px 14px;border-radius:20px;background:var(--cream-2);color:var(--brown);font-size:.9rem;margin-inline-end:12px;transition:.25s}
 .lang-btn:hover{background:var(--gold)}
@@ -305,6 +331,10 @@ html{-webkit-text-size-adjust:100%}
       <a href="#menu">القائمة</a><a href="#about">قصتنا</a><a href="#contact">تواصل معنا</a>
     </nav>
     <a class="lang-btn" href="index.html" hreflang="en" lang="en" style="font-family:Poppins,sans-serif">English</a>
+    <div class="actions">
+    <div class="cur-switch" role="group" aria-label="العملة">
+      <button class="cur-opt" data-cur="LBP" aria-pressed="true">ل.ل.</button><button class="cur-opt" data-cur="USD" aria-pressed="false">$</button>
+    </div>
     <button class="cart-btn" id="cartBtn" aria-label="افتح السلة" aria-haspopup="dialog">
       <span class="flames" aria-hidden="true">
         <i class="flame"><svg viewBox="0 0 24 32"><path d="M12 1C13 9 21 13 21 22a9 9 0 0 1-18 0c0-5 3-8 5-11 0 3 1 5 3 6 1-6 0-11 1-16z"/></svg></i>
@@ -316,6 +346,7 @@ html{-webkit-text-size-adjust:100%}
       <svg class="cart-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8a2 2 0 0 0 2-1.5L21 8H6"/></svg>
       <span class="cart-badge" id="cartBadge" aria-live="polite">0</span>
     </button>
+    </div>
   </div>
 </header>
 
@@ -392,6 +423,11 @@ html{-webkit-text-size-adjust:100%}
       <button class="mode-btn" data-mode="delivery" aria-pressed="true">🛵 توصيل<small id="feeLabel"></small></button>
       <button class="mode-btn" data-mode="pickup" aria-pressed="false">🏪 سآتي إلى الفرن<small>بدون رسوم توصيل</small></button>
     </div>
+    <div class="pay-label">طريقة الدفع</div>
+    <div class="mode" role="group" aria-label="طريقة الدفع">
+      <button class="mode-btn" data-pay="cash" aria-pressed="true">💵 نقداً<small>عند الاستلام</small></button>
+      <button class="mode-btn" data-pay="whish" aria-pressed="false"><span class="wh">whish</span><small>ادفع الآن من التطبيق</small></button>
+    </div>
     <div class="pickup-note" id="pickupNote" hidden></div>
     <div class="field" id="addrField">
       <label for="address">عنوان التوصيل *</label>
@@ -410,9 +446,12 @@ html{-webkit-text-size-adjust:100%}
       <div class="row" id="feeRow"><span>رسوم التوصيل</span><span id="feeAmt"></span></div>
     </div>
     <div class="total"><span>المجموع</span><span id="cartTotal"></span></div>
+    <div class="total-alt" id="cartTotalAlt"></div>
+    <div class="whish-hint" id="whishHint" hidden>دفعت <b id="whishPaidAmt"></b> عبر Whish؟ اضغط بالأسفل لإرسال طلبك. <a id="whishAgain" target="_blank" rel="noopener">افتح Whish مجدداً</a></div>
+    <a class="whish-btn" id="whishBtn" target="_blank" rel="noopener" hidden><span class="whish-logo">whish</span><span>ادفع <span id="whishAmt"></span></span></a>
     <button class="wa-btn" id="waBtn" disabled>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12 0C5.4 0 .1 5.3.1 11.9c0 2.1.6 4.1 1.6 5.9L0 24l6.4-1.7a11.9 11.9 0 0 0 5.6 1.4c6.6 0 11.9-5.3 11.9-11.9 0-3.2-1.2-6.2-3.4-8.3zM12 21.7c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 0 1-1.5-5.2C2.1 6.5 6.5 2.1 12 2.1c2.6 0 5.1 1 6.9 2.9a9.7 9.7 0 0 1 2.9 6.9c0 5.4-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1l-.9 1.1c-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>
-      أرسل الطلب عبر واتساب
+      <span id="waLabel">أرسل الطلب عبر واتساب</span>
     </button>
   </div>
 </aside>
@@ -427,6 +466,8 @@ const WHATSAPP_NUMBER = "9613970138";   // +961 03 970 138 -> international form
 const CURRENCY = "ل.ل.";                 // shown next to prices
 const CURRENCY_AFTER = true;             // true -> "50,000 L.L."
 const DECIMALS = 0;                      // LBP has no decimals
+const WHISH_PAY_LINK = "https://whish.money/app/pay/93ypyAu1r"; // your Whish payment link (same as your Whish QR code)
+const WHISH_NUMBER = "76053223";                                   // shown in the WhatsApp order
 const DELIVERY_FEE = 150000;            // added to the bill when the customer chooses delivery
 const VEG_PRICE = 20000;                 // "مع خضرا" (with veggies) extra, for items marked veg:true
 
@@ -569,6 +610,8 @@ const $ = s => document.querySelector(s);
 const STORAGE_KEY = "alsafir_cart_v2";
 let cart = [];            // [{id, opt, veg, qty}]
 let activeCat = "الكل";
+let pay = "cash";         // "cash" or "whish"
+let whishOpened = false;  // true after the customer tapped the Whish button
 let mode = "delivery";    // "delivery" or "pickup"
 const sel = {};           // current selection per item: {opt, veg}
 
@@ -577,7 +620,12 @@ const optIndex = (m, key) => Math.max(0, m.opts.findIndex(o => o.key === key));
 const getSel = m => sel[m.id] || (sel[m.id] = { opt: m.opts[0].key, veg: false });
 const unitPrice = (m, opt, veg) => m.prices[optIndex(m, opt)] + (veg ? VEG_PRICE : 0);
 const lineKey = l => `${l.id}|${l.opt}|${l.veg ? 1 : 0}`;
-const money = n => {
+const USD_RATE = 89000;                  // 1 $ = 89,000 L.L.  (change here when the rate changes)
+let cur = "LBP";                         // currency shown on the site
+try { if(localStorage.getItem("alsafir_cur") === "USD") cur = "USD"; } catch(e){}
+const moneyUSD = n => "$" + (n / USD_RATE).toFixed(2);
+const money = n => cur === "USD" ? moneyUSD(n) : moneyLBP(n);
+const moneyLBP = n => {
   const v = n.toLocaleString("en-US", { minimumFractionDigits: DECIMALS, maximumFractionDigits: DECIMALS });
   return CURRENCY_AFTER ? `${v} ${CURRENCY}` : `${CURRENCY}${v}`;
 };
@@ -789,6 +837,8 @@ function renderCart(bump){
   $("#feeAmt").textContent = money(DELIVERY_FEE);
   $("#feeLabel").textContent = "+" + money(DELIVERY_FEE);
   $("#cartTotal").textContent = money(totalPrice() + fee);
+  $("#cartTotalAlt").innerHTML = "≈ <b>" + (cur === "USD" ? moneyLBP(totalPrice() + fee) : moneyUSD(totalPrice() + fee)) + "</b>";
+  document.querySelectorAll("[data-cur]").forEach(b => b.setAttribute("aria-pressed", b.dataset.cur === cur));
   $("#addrField").hidden = mode !== "delivery";
   $("#pickupNote").hidden = mode !== "pickup";
   $("#pickupNote").textContent = `طلبك جاهز لتستلمه من الفرن في ${BAKERY.address}.`;
@@ -805,7 +855,23 @@ function validate(showError){
   const ok = !needAddr || hasAddr;
   $("#waBtn").disabled = !(cart.length && ok);
   $("#addrField").classList.toggle("invalid", needAddr && showError && !hasAddr);
+  updatePayUI(cart.length && ok);
   return ok;
+}
+function updatePayUI(ready){
+  const total = money(totalPrice() + deliveryFee());
+  document.querySelectorAll("[data-pay]").forEach(b => b.setAttribute("aria-pressed", b.dataset.pay === pay));
+  const step1 = pay === "whish" && !whishOpened;           // show red Whish button
+  $("#whishBtn").hidden = !step1;
+  $("#whishBtn").href = WHISH_PAY_LINK;
+  $("#whishBtn").classList.toggle("disabled", !ready);
+  $("#whishBtn").setAttribute("aria-disabled", !ready);
+  $("#whishAmt").textContent = total;
+  $("#waBtn").hidden = step1;
+  $("#whishHint").hidden = !(pay === "whish" && whishOpened);
+  $("#whishPaidAmt").textContent = total;
+  $("#whishAgain").href = WHISH_PAY_LINK;
+  $("#waLabel").textContent = pay === "whish" ? "دفعت · أرسل الطلب" : "أرسل الطلب عبر واتساب";
 }
 function sendWhatsApp(){
   if(!cart.length) return;
@@ -813,21 +879,28 @@ function sendWhatsApp(){
   const line = "----------------";
   const items = cart.map(l => {
     const m = find(l.id), d = describe(l);
-    return `${l.qty}× ${m.name}${d ? ` (${d})` : ""} - ${money(unitPrice(m, l.opt, l.veg) * l.qty)}`;
+    return `${l.qty}× ${m.name}${d ? ` (${d})` : ""} - ${moneyLBP(unitPrice(m, l.opt, l.veg) * l.qty)}`;
   }).join("\n");
   const notes = $("#notes").value.trim();
   const delivery = mode === "delivery";
   const msg = `طلب جديد 🥙\n${line}\n${items}\n${line}\n` +
-    `المجموع الفرعي: ${money(totalPrice())}\n` +
-    (delivery ? `رسوم التوصيل: ${money(DELIVERY_FEE)}\n` : "") +
-    `المجموع: ${money(totalPrice() + deliveryFee())}\n${line}\n` +
+    `المجموع الفرعي: ${moneyLBP(totalPrice())}\n` +
+    (delivery ? `رسوم التوصيل: ${moneyLBP(DELIVERY_FEE)}\n` : "") +
+    `المجموع: ${moneyLBP(totalPrice() + deliveryFee())} (≈ ${moneyUSD(totalPrice() + deliveryFee())})\n${line}\n` +
     (delivery ? `نوع الطلب: توصيل 🛵\nالعنوان: ${$("#address").value.trim()}\n` : `نوع الطلب: استلام من الفرن 🏪 (الزبون سيأتي إلى الفرن)\n`) +
+    (pay === "whish" ? `الدفع: Whish ✅ مدفوع (إلى ${WHISH_NUMBER})\n` : `الدفع: نقداً 💵\n`) +
     `ملاحظات: ${notes || "-"}`;
   // A real link click is more reliable than window.open (phones/popup blockers)
   const a = document.createElement("a");
   a.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   a.target = "_blank"; a.rel = "noopener";
   document.body.appendChild(a); a.click(); a.remove();
+  // Order has been handed to WhatsApp: empty the cart so it is not ordered twice
+  cart = []; save();
+  pay = "cash"; whishOpened = false;
+  $("#notes").value = "";
+  renderCart(); closeCart();
+  toast("تم تجهيز طلبك! اضغط إرسال في واتساب 🔥");
 }
 
 /* ---------- drawer ---------- */
@@ -862,6 +935,8 @@ document.addEventListener("click", e => {
     refreshCard(id, `[data-opt="${id}|${key}"]`);
   }
   if(t.hasAttribute("data-map-toggle")) toggleLiveMap(t);
+  if(t.dataset.cur){ cur = t.dataset.cur; try{ localStorage.setItem("alsafir_cur", cur); }catch(e){} renderMenu(); renderCart(); }
+  if(t.dataset.pay){ pay = t.dataset.pay; whishOpened = false; renderCart(); }
   if(t.dataset.mode){ mode = t.dataset.mode; renderCart(); }
   if(t.dataset.inc) changeQty(t.dataset.inc, 1);
   if(t.dataset.dec) changeQty(t.dataset.dec, -1);
@@ -884,6 +959,11 @@ $("#address").addEventListener("input", () => validate(true));
 $("#address").addEventListener("blur",  () => validate(true));
 $("#address").addEventListener("focus", () => setTimeout(() => $("#address").scrollIntoView({ block:"center", behavior:"smooth" }), 300));
 $("#waBtn").addEventListener("click", sendWhatsApp);
+$("#whishBtn").addEventListener("click", e => {
+  if(!cart.length || !validate(true)){ e.preventDefault(); $("#address").focus(); return; }
+  // the link opens Whish; when the customer comes back, the green button sends the order
+  setTimeout(() => { whishOpened = true; validate(false); }, 400);
+});
 
 /* ---------- scroll reveal ---------- */
 const io = new IntersectionObserver(entries => {
