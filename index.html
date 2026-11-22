@@ -261,6 +261,50 @@ footer{background:var(--brown);color:#d8c2a3;text-align:center;padding:36px 0 10
 .whish-btn.disabled .whish-logo{color:#c9a0a0}
 .whish-hint{font-size:.78rem;color:var(--brown-soft);background:#fff1f1;border:1px dashed #f2a0a0;border-radius:12px;padding:7px 10px;margin-bottom:8px;line-height:1.45}
 .whish-hint a{color:#e30613;font-weight:600;text-decoration:underline;white-space:nowrap}
+/* ---------- Pizza builder ---------- */
+.pz-builder{grid-column:1/-1;display:grid;gap:22px;align-items:start;direction:ltr}
+@media(min-width:760px){.pz-builder{grid-template-columns:1fr 1fr;gap:34px}}
+.pz-stage{position:sticky;top:76px;z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;background:radial-gradient(circle at 50% 45%,#fff3dc 0,#fbe9c8 60%,transparent 72%);padding:6px 0 10px}
+.pz-stage svg{width:min(380px,100%);height:auto;filter:drop-shadow(0 14px 22px rgba(58,32,19,.25));transition:transform .45s cubic-bezier(.3,1.5,.5,1)}
+.pz-stage svg.small{transform:scale(.86)}
+.pz-stage svg.pop{animation:pzpop .45s}
+@keyframes pzpop{40%{transform:scale(.92) rotate(-8deg)}}
+.pz-cap{font-weight:700;color:var(--red);text-align:center;line-height:1.3}
+.pz-cap small{display:block;color:var(--brown-soft);font-weight:500;font-size:.8rem}
+@media(max-width:759px){
+  .pz-stage{top:60px;background:var(--cream);border-radius:0 0 26px 26px;box-shadow:0 10px 18px -12px rgba(58,32,19,.35);margin-inline:-3%;padding:4px 0 8px}
+  .pz-stage svg{width:min(210px,56vw)}
+  .pz-cap{font-size:.88rem}
+}
+.pz-panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 18px 18px}
+.pz-panel h3{font-size:1.4rem;color:var(--red);margin-bottom:4px}
+.pz-step{display:flex;align-items:center;gap:8px;font-weight:700;margin:16px 0 8px;font-size:.95rem}
+.pz-step i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-size:.8rem}
+.pz-step small{font-weight:500;color:var(--brown-soft);font-size:.75rem}
+.pz-types{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.pz-type{border:2px solid var(--cream-2);border-radius:14px;padding:9px 8px;background:var(--cream);text-align:start;line-height:1.3;transition:.2s}
+.pz-type b{display:block;font-size:.85rem}
+.pz-type .ar{display:block;font-size:.75rem;color:var(--orange)}
+.pz-type small{display:block;color:var(--red);font-weight:600;font-size:.74rem;margin-top:2px}
+.pz-type[aria-pressed="true"],.pz-size[aria-pressed="true"]{border-color:var(--orange);background:#fff1dc}
+.pz-sizes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pz-size{border:2px solid var(--cream-2);border-radius:14px;padding:9px 6px;background:var(--cream);font-weight:600;font-size:.88rem;line-height:1.3}
+.pz-size small{display:block;color:var(--red);font-size:.76rem}
+.pz-tops{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pz-top{display:flex;align-items:center;gap:8px;border:2px solid var(--cream-2);border-radius:14px;padding:8px 10px;background:var(--cream);font-weight:600;font-size:.86rem;text-align:start;transition:.2s}
+.pz-top .bx{flex:none;width:20px;height:20px;border-radius:6px;border:2px solid #d9b98a;background:#fff;display:grid;place-items:center;font-size:.75rem;color:#fff;transition:.2s}
+.pz-top .ic{font-size:1.1rem}
+.pz-top small{margin-inline-start:auto;color:var(--red);font-size:.72rem}
+.pz-top[aria-pressed="true"]{border-color:var(--orange);background:#fff1dc}
+.pz-top[aria-pressed="true"] .bx{background:var(--orange);border-color:var(--orange)}
+.pz-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding-top:14px;border-top:1px dashed #e8cfa4}
+.pz-foot .price{font-size:1.25rem}
+.pz-add{padding:12px 22px;font-size:.95rem}
+/* toppings on the drawing appear / disappear */
+.tg .tp{transform-box:fill-box;transform-origin:center;transform:scale(0);opacity:0;transition:transform .38s cubic-bezier(.3,1.6,.5,1),opacity .25s}
+.tg.on .tp{transform:scale(1);opacity:1}
+.tg.layer .tp{transform:scale(.92)}
+.tg.layer.on .tp{transform:scale(1)}
 /* ---------- Currency switch ---------- */
 .actions{display:flex;align-items:center;gap:10px}
 .cur-switch{display:flex;background:var(--cream-2);border-radius:20px;padding:3px;direction:ltr}
@@ -272,7 +316,7 @@ footer{background:var(--brown);color:#d8c2a3;text-align:center;padding:36px 0 10
 @media(max-width:420px){.logo small{display:none}.logo .fire{font-size:1.2rem}.logo{gap:6px}.logo strong{font-size:1.1rem}}
 @media(max-width:380px){.lang-btn{padding:5px 10px;margin-inline-end:6px}.cur-opt{min-width:32px;padding:5px 7px}.actions{gap:6px}}
 /* ---------- Toast ---------- */
-.lang-btn{font-family:var(--font-ar);font-weight:700;padding:6px 14px;border-radius:20px;background:var(--cream-2);color:var(--brown);font-size:.9rem;margin-inline-end:12px;transition:.25s}
+.lang-btn{font-family:var(--font-ar);font-weight:700;padding:6px 14px;border-radius:20px;background:var(--cream-2);color:var(--brown);font-size:.9rem;transition:.25s}
 .lang-btn:hover{background:var(--gold)}
 .toast{position:fixed;inset-block-end:24px;inset-inline:0;margin-inline:auto;width:max-content;max-width:90%;background:var(--brown);color:var(--cream);padding:12px 24px;border-radius:40px;z-index:120;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(30px);transition:.35s;pointer-events:none}
 .toast.show{opacity:1;transform:none}
@@ -326,8 +370,8 @@ html{-webkit-text-size-adjust:100%}
     <nav class="nav-links" aria-label="Main">
       <a href="#menu">Menu</a><a href="#about">Our Story</a><a href="#contact">Contact</a>
     </nav>
-    <a class="lang-btn" href="ar.html" hreflang="ar" lang="ar">عربي</a>
     <div class="actions">
+    <a class="lang-btn" href="ar.html" hreflang="ar" lang="ar">عربي</a>
     <div class="cur-switch" role="group" aria-label="Currency">
       <button class="cur-opt" data-cur="LBP" aria-pressed="true">ل.ل.</button><button class="cur-opt" data-cur="USD" aria-pressed="false">$</button>
     </div>
@@ -588,8 +632,8 @@ const sel = {};           // current selection per item: {opt, veg}
 const find = id => MENU.find(m => m.id === id);
 const optIndex = (m, key) => Math.max(0, m.opts.findIndex(o => o.key === key));
 const getSel = m => sel[m.id] || (sel[m.id] = { opt: m.opts[0].key, veg: false });
-const unitPrice = (m, opt, veg) => m.prices[optIndex(m, opt)] + (veg ? VEG_PRICE : 0);
-const lineKey = l => `${l.id}|${l.opt}|${l.veg ? 1 : 0}`;
+const unitPrice = (m, opt, veg, tops) => m.prices[optIndex(m, opt)] + (veg ? VEG_PRICE : 0) + (tops && isPizza(m.id) ? extraTops(m.id, tops) * TOPPING_PRICE : 0);
+const lineKey = l => `${l.id}|${l.opt}|${l.veg ? 1 : 0}|${(l.tops || []).join(",")}`;
 const USD_RATE = 89000;                  // 1 $ = 89,000 L.L.  (change here when the rate changes)
 let cur = "LBP";                         // currency shown on the site
 try { if(localStorage.getItem("alsafir_cur") === "USD") cur = "USD"; } catch(e){}
@@ -738,12 +782,13 @@ function cardHTML(m){
       ${pills}${veg}
       <div class="card-foot">
         <span class="price">${money(unitPrice(m, s.opt, s.veg))}</span>
-        <button class="add-btn" data-add="${m.id}" aria-label="Add ${m.name} to cart">+ Add</button>
+        ${isPizza(m.id) ? `<button class="add-btn" data-build="${m.id}">${PZ_TXT.custom}</button>` : `<button class="add-btn" data-add="${m.id}" aria-label="Add ${m.name} to cart">+ Add</button>`}
       </div>
     </div>
   </article>`;
 }
 function renderMenu(){
+  if(activeCat === PIZZA_CAT()){ $("#menuGrid").innerHTML = builderHTML(); paintPizza(); return; }
   const items = MENU.filter(m => activeCat === "All" || m.cat === activeCat);
   $("#menuGrid").innerHTML = items.map(cardHTML).join("");
 }
@@ -753,13 +798,142 @@ function refreshCard(id, focusSel){
   if(focusSel){ const n = document.querySelector(focusSel); n && n.focus(); }
 }
 
+
+/* =====================================================
+   PIZZA BUILDER  (edit toppings and which pizza comes with what)
+   ===================================================== */
+const TOPPING_PRICE = 0;   // extra price for each topping ADDED beyond the pizza's usual ones (0 = free)
+const TOPPINGS = [
+  { key:"sauce",    en:"Tomato sauce", ar:"صوص",     ic:"🥫" },
+  { key:"cheese",   en:"Cheese",       ar:"جبنة",    ic:"🧀" },
+  { key:"mushroom", en:"Mushroom",     ar:"فطر",     ic:"🍄" },
+  { key:"olives",   en:"Olives",       ar:"زيتون",   ic:"🫒" },
+  { key:"pepper",   en:"Green pepper", ar:"فليفلة",  ic:"🫑" },
+  { key:"corn",     en:"Corn",         ar:"ذرة",     ic:"🌽" },
+  { key:"tomato",   en:"Tomato",       ar:"بندورة",  ic:"🍅" },
+  { key:"onion",    en:"Onion",        ar:"بصل",     ic:"🧅" }
+];
+/* meat = what is always on that pizza; def = toppings already ticked when the pizza is chosen */
+const PIZZA_BUILD = {
+  "pz-marg":   { meat:null,     def:["sauce","cheese"] },
+  "pz-veg":    { meat:null,     def:["sauce","cheese","mushroom","olives","pepper","corn","tomato"] },
+  "pz-sujuk":  { meat:"sujuk",  def:["sauce","cheese"] },
+  "pz-mort":   { meat:"mort",   def:["sauce","cheese"] },
+  "pz-turkey": { meat:"turkey", def:["sauce","cheese"] }
+};
+const LANG = document.documentElement.lang === "ar" ? "ar" : "en";
+const PZ_TXT = {
+  en:{ title:"Build your pizza", s1:"Choose your pizza", s2:"Size", s3:"Toppings", hint:"tap to add or remove", add:"Add to cart", added:"✓ Added", custom:"🍕 Customize", tops:"Toppings", none:"no toppings", addedMsg:"added to cart" },
+  ar:{ title:"اصنع البيتزا على ذوقك", s1:"اختر البيتزا", s2:"الحجم", s3:"المكوّنات", hint:"اضغط للإضافة أو الإزالة", add:"أضف إلى السلة", added:"✓ تمت الإضافة", custom:"🍕 خصّصها", tops:"المكوّنات", none:"بدون مكوّنات", addedMsg:"أُضيفت إلى السلة" }
+}[LANG];
+const topName = k => { const t = TOPPINGS.find(x => x.key === k); return t ? t[LANG] : k; };
+const isPizza = id => !!PIZZA_BUILD[id];
+const extraTops = (id, tops) => (tops || []).filter(k => !PIZZA_BUILD[id].def.includes(k)).length;
+const orderTops = arr => TOPPINGS.map(t => t.key).filter(k => arr.includes(k));
+const PIZZA_CAT = () => (MENU.find(m => isPizza(m.id)) || {}).cat;
+const bld = { id:"pz-marg", opt:"reg", tops:["sauce","cheese"] };
+function pickPizza(id){ bld.id = id; bld.tops = [...PIZZA_BUILD[id].def]; }
+
+/* ---- drawing ---- */
+function pzItem(key, x, y, i){
+  const rot = (i * 67) % 360, d = `style="transition-delay:${i*25}ms"`;
+  const T = (inner) => `<g class="tp" ${d}><g transform="translate(${x} ${y}) rotate(${rot})">${inner}</g></g>`;
+  switch(key){
+    case "mushroom": return T(`<path d="M-11 1a11 10 0 0 1 22 0z" fill="#efe2cc" stroke="#a88a66" stroke-width="2"/><rect x="-4" y="0" width="8" height="9" rx="3" fill="#f7efe2" stroke="#a88a66" stroke-width="2"/>`);
+    case "olives":   return T(`<circle r="7" fill="#2a2522"/><circle r="3" fill="#7a5c3a"/>`);
+    case "pepper":   return T(`<path d="M-10 4a11 11 0 0 1 20 0" fill="none" stroke="#2f8f3a" stroke-width="5" stroke-linecap="round"/>`);
+    case "corn":     return T(`<circle r="4.5" fill="#f9cf2b" stroke="#d9a400" stroke-width="1.5"/>`);
+    case "tomato":   return T(`<circle r="12" fill="#e2412f" stroke="#b5281a" stroke-width="2"/><circle r="6" fill="none" stroke="#ff8a70" stroke-width="2" stroke-dasharray="3 3"/>`);
+    case "onion":    return T(`<circle r="9" fill="none" stroke="#b780c4" stroke-width="3"/><circle r="5" fill="none" stroke="#d6a8e0" stroke-width="2"/>`);
+    case "sujuk":    return T(`<circle r="10" fill="#8f1f18" stroke="#5e120d" stroke-width="2"/><circle cx="-3" cy="-2" r="1.6" fill="#e8b4a0"/><circle cx="3" cy="3" r="1.4" fill="#e8b4a0"/>`);
+    case "mort":     return T(`<circle r="13" fill="#f4a9a8" stroke="#d9827f" stroke-width="2"/><circle cx="-4" cy="-3" r="2" fill="#fff"/><circle cx="4" cy="2" r="1.8" fill="#fff"/><circle cx="-1" cy="5" r="1.5" fill="#fff"/>`);
+    case "turkey":   return T(`<rect x="-11" y="-8" width="22" height="16" rx="4" fill="#f6d2c3" stroke="#d9a891" stroke-width="2"/>`);
+  }
+  return "";
+}
+function pzGroup(key, k, n){
+  let out = "";
+  for(let i = 0; i < n; i++){
+    const a = i * 2.39996 + k * 1.1;
+    const r = Math.sqrt((i + .6) / n) * 92;
+    out += pzItem(key, (150 + r * Math.cos(a)).toFixed(1), (150 + r * Math.sin(a)).toFixed(1), i);
+  }
+  return `<g class="tg" data-tg="${key}">${out}</g>`;
+}
+function pizzaSVG(){
+  let cheese = "";
+  for(let i = 0; i < 16; i++){ const a = i * 2.39996, r = Math.sqrt((i + .5) / 16) * 96;
+    cheese += `<circle class="tp" cx="${(150 + r*Math.cos(a)).toFixed(1)}" cy="${(150 + r*Math.sin(a)).toFixed(1)}" r="${20 + (i*7)%10}" fill="#ffd95c" opacity=".92"/>`; }
+  const sides = ["mushroom","olives","pepper","corn","tomato","onion"];
+  return `<svg id="pzSvg" viewBox="0 0 300 300" role="img" aria-label="${PZ_TXT.title}">
+    <circle cx="150" cy="150" r="142" fill="#d98e3a"/><circle cx="150" cy="150" r="136" fill="#eaa64f"/>
+    <circle cx="150" cy="150" r="124" fill="#f6dba2"/>
+    <g class="tg layer" data-tg="sauce"><circle class="tp" cx="150" cy="150" r="121" fill="#c93a24"/><circle class="tp" cx="120" cy="125" r="30" fill="#b52f1c" opacity=".6"/><circle class="tp" cx="185" cy="180" r="24" fill="#b52f1c" opacity=".5"/></g>
+    <g class="tg layer" data-tg="cheese">${cheese}</g>
+    ${pzGroup("sujuk",0,10)}${pzGroup("mort",0,8)}${pzGroup("turkey",0,10)}
+    ${sides.map((k,i) => pzGroup(k, i + 1, k === "corn" ? 16 : (k === "tomato" ? 6 : 8))).join("")}
+    <g fill="#f7c97a" opacity=".55"><circle cx="40" cy="120" r="3"/><circle cx="260" cy="170" r="3"/><circle cx="150" cy="18" r="2.5"/><circle cx="120" cy="282" r="2.5"/></g>
+  </svg>`;
+}
+function builderHTML(){
+  const m = find(bld.id);
+  const pizzas = MENU.filter(x => isPizza(x.id));
+  return `<div class="pz-builder">
+    <div class="pz-stage">${pizzaSVG()}<div class="pz-cap" id="pzCap"></div></div>
+    <div class="pz-panel" dir="${LANG === "ar" ? "rtl" : "ltr"}">
+      <h3>${PZ_TXT.title}</h3>
+      <div class="pz-step"><i>1</i>${PZ_TXT.s1}</div>
+      <div class="pz-types">${pizzas.map(p => `<button class="pz-type" data-pz-type="${p.id}"><b>${p.name}</b>${p.ar ? `<span class="ar">${p.ar}</span>` : ""}<small>${money(p.prices[0])}</small></button>`).join("")}</div>
+      <div class="pz-step"><i>2</i>${PZ_TXT.s2}</div>
+      <div class="pz-sizes" id="pzSizes"></div>
+      <div class="pz-step"><i>3</i>${PZ_TXT.s3} <small>(${PZ_TXT.hint})</small></div>
+      <div class="pz-tops">${TOPPINGS.map(t => `<button class="pz-top" data-pz-top="${t.key}"><span class="bx">✓</span><span class="ic">${t.ic}</span>${t[LANG]}${TOPPING_PRICE ? `<small class="tp-price"></small>` : ""}</button>`).join("")}</div>
+      <div class="pz-foot"><span class="price" id="pzPrice"></span><button class="btn btn-primary pz-add" data-pz-add="1">${PZ_TXT.add}</button></div>
+    </div>
+  </div>`;
+}
+function paintPizza(pop){
+  const m = find(bld.id), b = PIZZA_BUILD[bld.id];
+  document.querySelectorAll("[data-pz-type]").forEach(x => x.setAttribute("aria-pressed", x.dataset.pzType === bld.id));
+  document.querySelectorAll("[data-pz-top]").forEach(x => {
+    const on = bld.tops.includes(x.dataset.pzTop);
+    x.setAttribute("aria-pressed", on);
+    const p = x.querySelector(".tp-price"); if(p) p.textContent = b.def.includes(x.dataset.pzTop) ? "" : "+" + money(TOPPING_PRICE);
+  });
+  $("#pzSizes").innerHTML = m.opts.map((o,i) => `<button class="pz-size" data-pz-size="${o.key}" aria-pressed="${o.key === bld.opt}">${o.label}${o.ar ? ` · ${o.ar}` : ""}<small>${money(m.prices[i])}</small></button>`).join("");
+  document.querySelectorAll("#pzSvg [data-tg]").forEach(g => {
+    const k = g.dataset.tg;
+    g.classList.toggle("on", k === b.meat || bld.tops.includes(k));
+  });
+  const svg = $("#pzSvg");
+  svg.classList.toggle("small", bld.opt !== "large");
+  if(pop){ svg.classList.remove("pop"); void svg.getBoundingClientRect(); svg.classList.add("pop"); }
+  const o = m.opts[optIndex(m, bld.opt)];
+  $("#pzCap").innerHTML = `${m.name} · ${o.label}<small>${bld.tops.length ? bld.tops.map(topName).join(" · ") : PZ_TXT.none}</small>`;
+  $("#pzPrice").textContent = money(unitPrice(m, bld.opt, false, bld.tops));
+}
+function addPizzaToCart(btn){
+  const probe = { id: bld.id, opt: bld.opt, veg: false, tops: orderTops(bld.tops) };
+  const line = cart.find(l => lineKey(l) === lineKey(probe));
+  line ? line.qty++ : cart.push({ ...probe, qty:1 });
+  renderCart(true); save();
+  btn.textContent = PZ_TXT.added; btn.classList.add("pop");
+  setTimeout(() => { btn.textContent = PZ_TXT.add; btn.classList.remove("pop"); }, 900);
+  toast(`${find(bld.id).name} ${PZ_TXT.addedMsg}`);
+}
+function openBuilder(id){
+  if(id) pickPizza(id);
+  activeCat = PIZZA_CAT(); renderChips(); renderMenu();
+  document.getElementById("menu").scrollIntoView({ behavior:"smooth" });
+}
+
 /* ---------- cart ---------- */
 const deliveryFee = () => (mode === "delivery" && cart.length) ? DELIVERY_FEE : 0;
 const totalQty = () => cart.reduce((s,l)=>s+l.qty,0);
-const totalPrice = () => cart.reduce((s,l)=>s+l.qty*unitPrice(find(l.id), l.opt, l.veg),0);
+const totalPrice = () => cart.reduce((s,l)=>s+l.qty*unitPrice(find(l.id), l.opt, l.veg, l.tops),0);
 const describe = l => {
   const m = find(l.id); const o = m.opts[optIndex(m, l.opt)];
-  return [o.label, l.veg ? "with veggies" : ""].filter(Boolean).join(" · ");
+  return [o.label, l.veg ? "with veggies" : ""].concat(l.tops ? [l.tops.length ? `${PZ_TXT.tops}: ${l.tops.map(topName).join(LANG === "ar" ? "، " : ", ")}` : PZ_TXT.none] : []).filter(Boolean).join(" · ");
 };
 
 function addToCart(id){
@@ -786,7 +960,7 @@ function renderCart(bump){
     $("#cartBody").innerHTML = `<div class="empty"><span>🫓</span><p><strong>Your cart is empty</strong></p><p>Add something hot from the menu!</p></div>`;
   } else {
     $("#cartBody").innerHTML = cart.map(l => {
-      const m = find(l.id), k = lineKey(l), u = unitPrice(m, l.opt, l.veg), d = describe(l);
+      const m = find(l.id), k = lineKey(l), u = unitPrice(m, l.opt, l.veg, l.tops), d = describe(l);
       return `<div class="line">
         <div class="line-name">${m.emoji} ${m.name}<span class="ar">${m.ar}</span></div>
         <div class="line-price">${money(u*l.qty)}</div>
@@ -850,7 +1024,7 @@ function sendWhatsApp(){
   const line = "----------------";
   const items = cart.map(l => {
     const m = find(l.id), d = describe(l);
-    return `${l.qty}x ${m.name} - ${m.ar}${d ? ` (${d})` : ""} - ${moneyLBP(unitPrice(m, l.opt, l.veg) * l.qty)}`;
+    return `${l.qty}x ${m.name} - ${m.ar}${d ? ` (${d})` : ""} - ${moneyLBP(unitPrice(m, l.opt, l.veg, l.tops) * l.qty)}`;
   }).join("\n");
   const notes = $("#notes").value.trim();
   const delivery = mode === "delivery";
@@ -906,6 +1080,11 @@ document.addEventListener("click", e => {
     refreshCard(id, `[data-opt="${id}|${key}"]`);
   }
   if(t.hasAttribute("data-map-toggle")) toggleLiveMap(t);
+  if(t.dataset.build){ openBuilder(t.dataset.build); return; }
+  if(t.dataset.pzType){ pickPizza(t.dataset.pzType); paintPizza(true); return; }
+  if(t.dataset.pzSize){ bld.opt = t.dataset.pzSize; paintPizza(); return; }
+  if(t.dataset.pzTop){ const k = t.dataset.pzTop; bld.tops = bld.tops.includes(k) ? bld.tops.filter(x => x !== k) : orderTops([...bld.tops, k]); paintPizza(); return; }
+  if(t.dataset.pzAdd){ addPizzaToCart(t); return; }
   if(t.dataset.cur){ cur = t.dataset.cur; try{ localStorage.setItem("alsafir_cur", cur); }catch(e){} renderMenu(); renderCart(); }
   if(t.dataset.pay){ pay = t.dataset.pay; whishOpened = false; renderCart(); }
   if(t.dataset.mode){ mode = t.dataset.mode; renderCart(); }
