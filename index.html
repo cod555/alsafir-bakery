@@ -297,6 +297,7 @@ footer{background:var(--brown);color:#d8c2a3;text-align:center;padding:36px 0 10
 .pz-top small{margin-inline-start:auto;color:var(--red);font-size:.72rem}
 .pz-top[aria-pressed="true"]{border-color:var(--orange);background:#fff1dc}
 .pz-top[aria-pressed="true"] .bx{background:var(--orange);border-color:var(--orange)}
+.pz-fixed{font-size:.82rem;font-weight:600;color:#1c7a3a;background:#e9f6ec;border-radius:12px;padding:8px 12px;margin-bottom:8px}
 .pz-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding-top:14px;border-top:1px dashed #e8cfa4}
 .pz-foot .price{font-size:1.25rem}
 .pz-add{padding:12px 22px;font-size:.95rem}
@@ -815,16 +816,17 @@ const TOPPINGS = [
 ];
 /* meat = what is always on that pizza; def = toppings already ticked when the pizza is chosen */
 const PIZZA_BUILD = {
-  "pz-marg":   { meat:null,     def:["sauce","cheese"] },
+  "pz-marg":   { meat:null,     def:["sauce","cheese"], allow:["corn"] },   // Margherita: only corn can be added
   "pz-veg":    { meat:null,     def:["sauce","cheese","mushroom","olives","pepper","corn","tomato"] },
   "pz-sujuk":  { meat:"sujuk",  def:["sauce","cheese"] },
   "pz-mort":   { meat:"mort",   def:["sauce","cheese"] },
   "pz-turkey": { meat:"turkey", def:["sauce","cheese"] }
 };
+const FIXED_TOPS = ["sauce","cheese"];   // always on every pizza, cannot be removed
 const LANG = document.documentElement.lang === "ar" ? "ar" : "en";
 const PZ_TXT = {
-  en:{ title:"Build your pizza", s1:"Choose your pizza", s2:"Size", s3:"Toppings", hint:"tap to add or remove", add:"Add to cart", added:"✓ Added", custom:"🍕 Customize", tops:"Toppings", none:"no toppings", addedMsg:"added to cart" },
-  ar:{ title:"اصنع البيتزا على ذوقك", s1:"اختر البيتزا", s2:"الحجم", s3:"المكوّنات", hint:"اضغط للإضافة أو الإزالة", add:"أضف إلى السلة", added:"✓ تمت الإضافة", custom:"🍕 خصّصها", tops:"المكوّنات", none:"بدون مكوّنات", addedMsg:"أُضيفت إلى السلة" }
+  en:{ title:"Build your pizza", s1:"Choose your pizza", s2:"Size", s3:"Toppings", hint:"tap to add or remove", add:"Add to cart", added:"✓ Added", custom:"🍕 Customize", tops:"Toppings", none:"no toppings", addedMsg:"added to cart", always:"Always included" },
+  ar:{ title:"اصنع البيتزا على ذوقك", s1:"اختر البيتزا", s2:"الحجم", s3:"المكوّنات", hint:"اضغط للإضافة أو الإزالة", add:"أضف إلى السلة", added:"✓ تمت الإضافة", custom:"🍕 خصّصها", tops:"المكوّنات", none:"بدون مكوّنات", addedMsg:"أُضيفت إلى السلة", always:"مشمول دائماً" }
 }[LANG];
 const topName = k => { const t = TOPPINGS.find(x => x.key === k); return t ? t[LANG] : k; };
 const isPizza = id => !!PIZZA_BUILD[id];
@@ -832,7 +834,8 @@ const extraTops = (id, tops) => (tops || []).filter(k => !PIZZA_BUILD[id].def.in
 const orderTops = arr => TOPPINGS.map(t => t.key).filter(k => arr.includes(k));
 const PIZZA_CAT = () => (MENU.find(m => isPizza(m.id)) || {}).cat;
 const bld = { id:"pz-marg", opt:"reg", tops:["sauce","cheese"] };
-function pickPizza(id){ bld.id = id; bld.tops = [...PIZZA_BUILD[id].def]; }
+function pickPizza(id){ bld.id = id; bld.tops = orderTops([...new Set([...FIXED_TOPS, ...PIZZA_BUILD[id].def])]); }
+const canToggle = k => !FIXED_TOPS.includes(k) && (!PIZZA_BUILD[bld.id].allow || PIZZA_BUILD[bld.id].allow.includes(k));
 
 /* ---- drawing ---- */
 function pzItem(key, x, y, i){
@@ -887,7 +890,8 @@ function builderHTML(){
       <div class="pz-step"><i>2</i>${PZ_TXT.s2}</div>
       <div class="pz-sizes" id="pzSizes"></div>
       <div class="pz-step"><i>3</i>${PZ_TXT.s3} <small>(${PZ_TXT.hint})</small></div>
-      <div class="pz-tops">${TOPPINGS.map(t => `<button class="pz-top" data-pz-top="${t.key}"><span class="bx">✓</span><span class="ic">${t.ic}</span>${t[LANG]}${TOPPING_PRICE ? `<small class="tp-price"></small>` : ""}</button>`).join("")}</div>
+      <div class="pz-fixed">✓ ${PZ_TXT.always}: ${FIXED_TOPS.map(k => { const t = TOPPINGS.find(x => x.key === k); return t.ic + " " + t[LANG]; }).join(" · ")}</div>
+      <div class="pz-tops" id="pzTops"></div>
       <div class="pz-foot"><span class="price" id="pzPrice"></span><button class="btn btn-primary pz-add" data-pz-add="1">${PZ_TXT.add}</button></div>
     </div>
   </div>`;
@@ -895,6 +899,7 @@ function builderHTML(){
 function paintPizza(pop){
   const m = find(bld.id), b = PIZZA_BUILD[bld.id];
   document.querySelectorAll("[data-pz-type]").forEach(x => x.setAttribute("aria-pressed", x.dataset.pzType === bld.id));
+  $("#pzTops").innerHTML = TOPPINGS.filter(t => canToggle(t.key)).map(t => `<button class="pz-top" data-pz-top="${t.key}"><span class="bx">✓</span><span class="ic">${t.ic}</span>${t[LANG]}${TOPPING_PRICE ? `<small class="tp-price"></small>` : ""}</button>`).join("");
   document.querySelectorAll("[data-pz-top]").forEach(x => {
     const on = bld.tops.includes(x.dataset.pzTop);
     x.setAttribute("aria-pressed", on);
@@ -1083,7 +1088,7 @@ document.addEventListener("click", e => {
   if(t.dataset.build){ openBuilder(t.dataset.build); return; }
   if(t.dataset.pzType){ pickPizza(t.dataset.pzType); paintPizza(true); return; }
   if(t.dataset.pzSize){ bld.opt = t.dataset.pzSize; paintPizza(); return; }
-  if(t.dataset.pzTop){ const k = t.dataset.pzTop; bld.tops = bld.tops.includes(k) ? bld.tops.filter(x => x !== k) : orderTops([...bld.tops, k]); paintPizza(); return; }
+  if(t.dataset.pzTop){ const k = t.dataset.pzTop; if(!canToggle(k)) return; bld.tops = bld.tops.includes(k) ? bld.tops.filter(x => x !== k) : orderTops([...bld.tops, k]); paintPizza(); return; }
   if(t.dataset.pzAdd){ addPizzaToCart(t); return; }
   if(t.dataset.cur){ cur = t.dataset.cur; try{ localStorage.setItem("alsafir_cur", cur); }catch(e){} renderMenu(); renderCart(); }
   if(t.dataset.pay){ pay = t.dataset.pay; whishOpened = false; renderCart(); }
