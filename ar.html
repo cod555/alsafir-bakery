@@ -306,6 +306,43 @@ footer{background:var(--brown);color:#d8c2a3;text-align:center;padding:36px 0 10
 .tg.on .tp{transform:scale(1);opacity:1}
 .tg.layer .tp{transform:scale(.92)}
 .tg.layer.on .tp{transform:scale(1)}
+/* ---------- Dozen box builder ---------- */
+.dz-box{width:min(340px,100%);background:linear-gradient(180deg,#e9c48f,#d6a35f);border:3px solid #b5813f;border-radius:16px;padding:14px 12px 12px;box-shadow:0 16px 26px -10px rgba(58,32,19,.45);position:relative}
+.dz-box::before{content:"";position:absolute;inset-inline:18%;top:-14px;height:14px;background:#c9934f;border:3px solid #b5813f;border-bottom:none;border-radius:10px 10px 0 0}
+.dz-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#fff7e8;border-radius:10px;padding:8px;box-shadow:inset 0 2px 8px rgba(120,70,20,.25)}
+.dz-slot{aspect-ratio:1;border-radius:50%;border:2px dashed #e6cc9f;display:grid;place-items:center}
+.dz-slot.full{border-color:transparent}
+.dz-slot svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(90,50,10,.3))}
+.dz-slot.new svg{animation:dzpop .45s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes dzpop{from{transform:scale(0) rotate(-40deg);opacity:0}}
+.dz-more{position:absolute;inset-block-end:-12px;inset-inline-end:-10px;background:var(--red);color:#fff;font-weight:700;font-size:.8rem;border-radius:20px;padding:3px 10px;box-shadow:var(--shadow)}
+.dz-empty{grid-column:1/-1;text-align:center;font-size:.8rem;color:var(--brown-soft);padding:2px 0 4px}
+@media(max-width:759px){
+  .dz-box{width:min(300px,86vw);padding:10px 8px 8px}
+  .dz-grid{grid-template-columns:repeat(6,1fr);gap:4px;padding:6px}
+}
+.dz-list{display:flex;flex-direction:column;gap:8px}
+.dz-row{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"ic nm dz" "ic pr q";align-items:center;gap:4px 10px;border:2px solid var(--cream-2);border-radius:14px;padding:8px 10px;background:var(--cream);transition:.2s}
+.dz-row.has{border-color:var(--orange);background:#fff1dc}
+.dz-ic{grid-area:ic;font-size:1.6rem}
+.dz-nm{grid-area:nm;font-weight:700;font-size:.92rem;line-height:1.25}
+.dz-nm .ar{display:block;font-size:.75rem;color:var(--orange);font-weight:600}
+.dz-pr{grid-area:pr;font-size:.74rem;color:var(--brown-soft);line-height:1.35}
+.dz-pr b{color:var(--red)}
+.dz-dozen{grid-area:dz;justify-self:end;background:var(--brown);color:var(--cream);border-radius:20px;padding:6px 12px;font-size:.78rem;font-weight:700;white-space:nowrap;transition:.2s}
+.dz-dozen:hover{background:var(--orange)}
+.dz-row .qty{grid-area:q;justify-self:end}
+.dz-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--cream-2);border-radius:16px;padding:4px;margin:10px 0 4px}
+.dz-tab{border-radius:12px;padding:9px 6px;font-weight:700;font-size:.88rem;color:var(--brown-soft);transition:.25s}
+.dz-tab[aria-pressed="true"]{background:#fff;color:var(--red);box-shadow:0 3px 10px rgba(58,32,19,.15)}
+.dz-mixinfo{font-size:.85rem;color:var(--brown-soft);margin:12px 0 8px;line-height:1.5}
+.dz-mixinfo b{color:var(--red)}
+.dz-meter{position:relative;height:26px;border-radius:14px;background:var(--cream-2);overflow:hidden;margin-bottom:10px}
+.dz-meter span{position:absolute;inset-block:0;inset-inline-start:0;width:0;background:linear-gradient(90deg,var(--gold),var(--orange));transition:width .35s}
+.dz-meter b{position:relative;display:block;text-align:center;line-height:26px;font-size:.85rem;color:var(--brown)}
+.dz-row.mix{grid-template-areas:"ic nm q" "ic pr q"}
+.dz-row .qty button:disabled{opacity:.3;cursor:not-allowed}
+.dz-clear{font-size:.8rem;color:var(--red);text-decoration:underline;margin-top:10px}
 /* ---------- Currency switch ---------- */
 .actions{display:flex;align-items:center;gap:10px}
 .cur-switch{display:flex;background:var(--cream-2);border-radius:20px;padding:3px;direction:ltr}
@@ -664,7 +701,7 @@ const find = id => MENU.find(m => m.id === id);
 const optIndex = (m, key) => Math.max(0, m.opts.findIndex(o => o.key === key));
 const getSel = m => sel[m.id] || (sel[m.id] = { opt: m.opts[0].key, veg: false });
 const unitPrice = (m, opt, veg, tops) => m.prices[optIndex(m, opt)] + (veg ? VEG_PRICE : 0) + (tops && isPizza(m.id) ? extraTops(m.id, tops) * TOPPING_PRICE : 0);
-const lineKey = l => `${l.id}|${l.opt}|${l.veg ? 1 : 0}|${(l.tops || []).join(",")}`;
+const lineKey = l => `${l.id}|${l.opt}|${l.veg ? 1 : 0}|${(l.tops || []).join(",")}|${l.mix ? Object.entries(l.mix).map(e => e.join(":")).join(",") : ""}`;
 const USD_RATE = 89000;                  // 1 $ = 89,000 L.L.  (change here when the rate changes)
 let cur = "LBP";                         // currency shown on the site
 try { if(localStorage.getItem("alsafir_cur") === "USD") cur = "USD"; } catch(e){}
@@ -812,12 +849,13 @@ function cardHTML(m){
       ${pills}${veg}
       <div class="card-foot">
         <span class="price">${money(unitPrice(m, s.opt, s.veg))}</span>
-        ${isPizza(m.id) ? `<button class="add-btn" data-build="${m.id}">${PZ_TXT.custom}</button>` : `<button class="add-btn" data-add="${m.id}" aria-label="أضف ${m.name} إلى السلة">+ أضف</button>`}
+        ${isDozen(m.id) ? `<button class="add-btn" data-dz-open="${m.id}">${DZ_TXT.open}</button>` : isPizza(m.id) ? `<button class="add-btn" data-build="${m.id}">${PZ_TXT.custom}</button>` : `<button class="add-btn" data-add="${m.id}" aria-label="أضف ${m.name} إلى السلة">+ أضف</button>`}
       </div>
     </div>
   </article>`;
 }
 function renderMenu(){
+  if(activeCat === DZ_CAT()){ $("#menuGrid").innerHTML = dozenHTML(); boxShown = {}; paintBox(); return; }
   if(activeCat === PIZZA_CAT()){ $("#menuGrid").innerHTML = builderHTML(); paintPizza(); return; }
   const items = MENU.filter(m => activeCat === "الكل" || m.cat === activeCat);
   $("#menuGrid").innerHTML = items.map(cardHTML).join("");
@@ -961,11 +999,164 @@ function openBuilder(id){
   document.getElementById("menu").scrollIntoView({ behavior:"smooth" });
 }
 
+/* =====================================================
+   DOZEN BOX BUILDER
+   - One kind: full dozens at the dozen price, extra pieces at (dozen price / 12, rounded to the nearest 10,000)
+   - Mixed dozen: exactly 12 pieces, at most MIX_MAX of each kind, at the Mixed dozen price
+   ===================================================== */
+const MIX_MAX = 4;                                  // max pieces of one kind in a mixed dozen
+const MIX_ID = "dz-mixed";
+const isDozen = id => /^dz-/.test(id);
+const DZ_CAT = () => (MENU.find(m => isDozen(m.id)) || {}).cat;
+const KINDS = () => MENU.filter(m => isDozen(m.id) && m.id !== MIX_ID);
+const piecePrice = m => Math.round(m.prices[0] / 12 / 10000) * 10000;
+const pcsPrice = (m, q) => Math.floor(q / 12) * m.prices[0] + (q % 12) * piecePrice(m);
+const linePrice = l => l.pcs ? pcsPrice(find(l.id), l.qty) : l.qty * unitPrice(find(l.id), l.opt, l.veg, l.tops);
+const shortName = m => m.name.replace(/\s*\(dozen\)/i, "").replace(/^دزينة\s+/, "");
+const DZ_TXT = {
+  en:{ title:"Fill your box", tabOne:"🥟 One kind", tabMix:"🎁 Mixed dozen", step:"Add a full dozen or single pieces", dozen:"dozen", piece:"piece", plus:"+ Dozen", pcs:"pcs",
+       empty:"Your box is empty: tap “+ Dozen” or + to add pieces", add:"Add box to cart", added:"✓ Added", clear:"Empty the box", open:"📦 Choose", addedMsg:"Box added to cart",
+       mixInfo:p => `Choose 12 pieces, up to ${MIX_MAX} of each kind, for ${p}`, mixAdd:"Add mixed dozen", more:n => `Add ${n} more`, mixEmpty:"Your mixed dozen is empty: add pieces with +", maxed:`max ${MIX_MAX}`,
+       kind:n => `${n} pastries`, split:(d,r) => [d ? `${d} ${d > 1 ? "dozens" : "dozen"}` : "", r ? `${r} ${r > 1 ? "pcs" : "pc"}` : ""].filter(Boolean).join(" + ") },
+  ar:{ title:"املأ علبتك", tabOne:"🥟 صنف واحد", tabMix:"🎁 دزينة مشكّلة", step:"أضف دزينة كاملة أو حبات مفردة", dozen:"الدزينة", piece:"الحبة", plus:"+ دزينة", pcs:"حبة",
+       empty:"علبتك فارغة: اضغط «+ دزينة» أو + لإضافة حبات", add:"أضف العلبة إلى السلة", added:"✓ تمت الإضافة", clear:"إفراغ العلبة", open:"📦 اختر", addedMsg:"تمت إضافة العلبة إلى السلة",
+       mixInfo:p => `اختر 12 حبة، بحد أقصى ${MIX_MAX} من كل صنف، بسعر ${p}`, mixAdd:"أضف الدزينة المشكّلة", more:n => `أضف ${n} بعد`, mixEmpty:"الدزينة المشكّلة فارغة: أضف حبات بزر +", maxed:`الحد ${MIX_MAX}`,
+       kind:n => `معجنات ${n}`, split:(d,r) => [d ? `${d} دزينة` : "", r ? `${r} حبة` : ""].filter(Boolean).join(" + ") }
+}[LANG];
+const describePcs = q => DZ_TXT.split(Math.floor(q / 12), q % 12);
+const describeMix = mx => Object.keys(mx).map(id => `${mx[id]} ${shortName(find(id))}`).join(LANG === "ar" ? "، " : ", ");
+let dzTab = "one";      // "one" or "mix"
+let box = {};           // one-kind pieces  { "dz-zaatar": 14 }
+let mix = {};           // current mixed dozen { "dz-cheese": 4, ... }
+let boxShown = {};
+const frac = (a, b) => `\u2066${a} / ${b}\u2069`;   // keeps "3 / 4" readable in Arabic too
+const mixTotal = () => Object.values(mix).reduce((a, b) => a + b, 0);
+
+function pieceSVG(id){
+  const dough = `fill="#eab164" stroke="#c98a3c" stroke-width="2"`;
+  let s = "";
+  switch(id){
+    case "dz-pizza":  s = `<circle cx="20" cy="20" r="16" ${dough}/><circle cx="20" cy="20" r="11" fill="#c93a24"/><circle cx="16" cy="17" r="3" fill="#ffd95c"/><circle cx="24" cy="22" r="3" fill="#ffd95c"/><circle cx="18" cy="25" r="2" fill="#2a2522"/>`; break;
+    case "dz-spin":   s = `<path d="M20 4 L36 33 L4 33 Z" ${dough} stroke-linejoin="round"/><path d="M20 14 L28 29 L12 29 Z" fill="#3f8f3a" opacity=".55"/>`; break;
+    case "dz-zaatar": s = `<circle cx="20" cy="20" r="16" ${dough}/><circle cx="20" cy="20" r="12" fill="#6b7d2e"/><g fill="#a8b860"><circle cx="15" cy="16" r="1.6"/><circle cx="24" cy="18" r="1.6"/><circle cx="19" cy="24" r="1.6"/><circle cx="26" cy="25" r="1.3"/></g>`; break;
+    case "dz-cheese": s = `<path d="M3 20 Q20 2 37 20 Q20 38 3 20Z" ${dough}/><ellipse cx="20" cy="20" rx="11" ry="6" fill="#ffd95c"/>`; break;
+    case "dz-sfiha":  s = `<rect x="5" y="5" width="30" height="30" rx="5" ${dough}/><rect x="10" y="10" width="20" height="20" rx="3" fill="#8a3b22"/><circle cx="16" cy="16" r="2" fill="#e05a3a"/><circle cx="24" cy="23" r="2" fill="#e05a3a"/>`; break;
+    case "dz-lahm":   s = `<circle cx="20" cy="20" r="16" ${dough}/><circle cx="20" cy="20" r="12" fill="#9c3a1f"/><circle cx="15" cy="18" r="2.5" fill="#d9573a"/><circle cx="24" cy="23" r="2.5" fill="#d9573a"/>`; break;
+    case "dz-kishk":  s = `<circle cx="20" cy="20" r="16" ${dough}/><circle cx="20" cy="20" r="12" fill="#c8693a"/><circle cx="20" cy="20" r="5" fill="#e89a5c"/>`; break;
+  }
+  return `<svg viewBox="0 0 40 40" aria-hidden="true">${s}</svg>`;
+}
+function dozenHTML(){
+  const mixM = find(MIX_ID);
+  const rowsOne = KINDS().map(m => `<div class="dz-row" data-dz-row="${m.id}">
+        <span class="dz-ic">${m.emoji}</span>
+        <div class="dz-nm">${shortName(m)}${m.ar ? `<span class="ar">${m.ar.replace(/^دزينة\s+/, "")}</span>` : ""}</div>
+        <div class="dz-pr">${DZ_TXT.dozen} <b>${money(m.prices[0])}</b> · ${DZ_TXT.piece} <b>${money(piecePrice(m))}</b></div>
+        <button class="dz-dozen" data-dz-dozen="${m.id}">${DZ_TXT.plus}</button>
+        <div class="qty"><button data-dz-dec="${m.id}" aria-label="−1 ${shortName(m)}">−</button><strong data-dz-n="${m.id}">0</strong><button data-dz-inc="${m.id}" aria-label="+1 ${shortName(m)}">+</button></div>
+      </div>`).join("");
+  const rowsMix = KINDS().map(m => `<div class="dz-row mix" data-dz-row="${m.id}">
+        <span class="dz-ic">${m.emoji}</span>
+        <div class="dz-nm">${shortName(m)}${m.ar ? `<span class="ar">${m.ar.replace(/^دزينة\s+/, "")}</span>` : ""}</div>
+        <div class="dz-pr" data-mx-max="${m.id}"></div>
+        <div class="qty"><button data-mx-dec="${m.id}" aria-label="−1 ${shortName(m)}">−</button><strong data-dz-n="${m.id}">0</strong><button data-mx-inc="${m.id}" aria-label="+1 ${shortName(m)}">+</button></div>
+      </div>`).join("");
+  return `<div class="pz-builder dz-builder">
+    <div class="pz-stage"><div class="dz-box" id="dzBox"></div><div class="pz-cap" id="dzCap"></div></div>
+    <div class="pz-panel" dir="${LANG === "ar" ? "rtl" : "ltr"}">
+      <h3>${DZ_TXT.title}</h3>
+      <div class="dz-tabs" role="group"><button class="dz-tab" data-dz-tab="one" aria-pressed="${dzTab === "one"}">${DZ_TXT.tabOne}</button><button class="dz-tab" data-dz-tab="mix" aria-pressed="${dzTab === "mix"}">${DZ_TXT.tabMix}</button></div>
+      ${dzTab === "one"
+        ? `<div class="pz-step"><i>1</i>${DZ_TXT.step}</div><div class="dz-list">${rowsOne}</div><button class="dz-clear" data-dz-clear="1">${DZ_TXT.clear}</button>`
+        : `<div class="dz-mixinfo">${DZ_TXT.mixInfo(`<b>${money(mixM.prices[0])}</b>`)}</div><div class="dz-meter"><span id="mxBar"></span><b id="mxCount"></b></div><div class="dz-list">${rowsMix}</div><button class="dz-clear" data-dz-clear="1">${DZ_TXT.clear}</button>`}
+      <div class="pz-foot"><span class="price" id="dzPrice"></span><button class="btn btn-primary pz-add" data-dz-add="1">${dzTab === "one" ? DZ_TXT.add : DZ_TXT.mixAdd}</button></div>
+    </div>
+  </div>`;
+}
+function paintBox(){
+  const src = dzTab === "one" ? box : mix;
+  const ids = Object.keys(src).filter(id => src[id] > 0);
+  const total = ids.reduce((s, id) => s + src[id], 0);
+  const SHOW = 24;
+  const pieces = [];
+  ids.forEach(id => { for(let i = 0; i < src[id]; i++) pieces.push({ id, isNew: i >= (boxShown[id] || 0) }); });
+  const slots = dzTab === "mix" ? 12 : Math.min(SHOW, Math.max(12, Math.ceil(total / 12) * 12));
+  let html = "";
+  for(let s = 0; s < slots; s++){
+    const p = pieces[s];
+    html += p ? `<div class="dz-slot full${p.isNew ? " new" : ""}">${pieceSVG(p.id)}</div>` : `<div class="dz-slot"></div>`;
+  }
+  $("#dzBox").innerHTML = `<div class="dz-grid">${html}</div>${total > slots ? `<span class="dz-more">+${total - slots}</span>` : ""}`;
+  boxShown = { ...src };
+  const add = document.querySelector("[data-dz-add]");
+  KINDS().forEach(m => {
+    const n = src[m.id] || 0;
+    document.querySelector(`[data-dz-n="${m.id}"]`).textContent = n;
+    document.querySelector(`[data-dz-row="${m.id}"]`).classList.toggle("has", n > 0);
+  });
+  if(dzTab === "one"){
+    const price = ids.reduce((s, id) => s + pcsPrice(find(id), box[id]), 0);
+    $("#dzCap").innerHTML = total ? `<bdi>${money(price)}</bdi><small>${total} ${DZ_TXT.pcs}${total >= 12 ? " · " + describePcs(total) : ""}</small>` : `<small>${DZ_TXT.empty}</small>`;
+    $("#dzPrice").textContent = money(price);
+    add.disabled = !total; add.textContent = DZ_TXT.add;
+  } else {
+    const price = find(MIX_ID).prices[0];
+    $("#dzCap").innerHTML = total ? `<bdi>${frac(total, 12)}</bdi><small>${describeMix(mix)}</small>` : `<small>${DZ_TXT.mixEmpty}</small>`;
+    $("#dzPrice").textContent = money(price);
+    $("#mxCount").textContent = frac(total, 12);
+    $("#mxBar").style.width = (total / 12 * 100) + "%";
+    KINDS().forEach(m => {
+      const n = mix[m.id] || 0;
+      document.querySelector(`[data-mx-inc="${m.id}"]`).disabled = n >= MIX_MAX || total >= 12;
+      document.querySelector(`[data-mx-max="${m.id}"]`).textContent = n >= MIX_MAX ? `✓ ${DZ_TXT.maxed}` : frac(n, MIX_MAX);
+    });
+    add.disabled = total !== 12; add.textContent = total === 12 ? DZ_TXT.mixAdd : DZ_TXT.more(12 - total);
+  }
+  add.style.opacity = add.disabled ? ".5" : "";
+}
+function changeBox(id, d){ box[id] = Math.max(0, (box[id] || 0) + d); if(!box[id]) delete box[id]; paintBox(); }
+function changeMix(id, d){
+  const n = (mix[id] || 0) + d;
+  if(n < 0 || n > MIX_MAX || (d > 0 && mixTotal() >= 12)) return;
+  if(n) mix[id] = n; else delete mix[id];
+  paintBox();
+}
+function addBoxToCart(btn){
+  if(dzTab === "one"){
+    const ids = Object.keys(box); if(!ids.length) return;
+    ids.forEach(id => {
+      const line = cart.find(l => l.id === id && l.pcs);
+      line ? line.qty += box[id] : cart.push({ id, opt:"one", veg:false, pcs:true, qty:box[id] });
+    });
+    box = {};
+  } else {
+    if(mixTotal() !== 12) return;
+    const mx = {}; KINDS().forEach(m => { if(mix[m.id]) mx[m.id] = mix[m.id]; });
+    const probe = { id:MIX_ID, opt:"one", veg:false, mix:mx };
+    const line = cart.find(l => lineKey(l) === lineKey(probe));
+    line ? line.qty++ : cart.push({ ...probe, qty:1 });
+    mix = {};
+  }
+  boxShown = {};
+  renderCart(true); save(); paintBox();
+  btn.textContent = DZ_TXT.added;
+  toast(DZ_TXT.addedMsg);
+}
+function setDzTab(tab){ dzTab = tab; boxShown = {}; renderMenu(); }
+function openDozen(id){
+  dzTab = id === MIX_ID ? "mix" : "one";
+  activeCat = DZ_CAT(); renderChips(); renderMenu();
+  if(id && id !== MIX_ID) changeBox(id, 12);
+  document.getElementById("menu").scrollIntoView({ behavior:"smooth" });
+}
+
 /* ---------- cart ---------- */
 const deliveryFee = () => (mode === "delivery" && cart.length) ? DELIVERY_FEE : 0;
-const totalQty = () => cart.reduce((s,l)=>s+l.qty,0);
-const totalPrice = () => cart.reduce((s,l)=>s+l.qty*unitPrice(find(l.id), l.opt, l.veg, l.tops),0);
+const totalQty = () => cart.reduce((s,l)=>s+(l.pcs ? 1 : l.qty),0);
+const totalPrice = () => cart.reduce((s,l)=>s+linePrice(l),0);
 const describe = l => {
+  if(l.pcs) return describePcs(l.qty);
+  if(l.mix) return describeMix(l.mix);
   const m = find(l.id); const o = m.opts[optIndex(m, l.opt)];
   return [o.label, l.veg ? "مع خضرا" : ""].concat(l.tops ? [l.tops.length ? `${PZ_TXT.tops}: ${l.tops.map(topName).join(LANG === "ar" ? "، " : ", ")}` : PZ_TXT.none] : []).filter(Boolean).join(" · ");
 };
@@ -997,8 +1188,8 @@ function renderCart(bump){
       const m = find(l.id), k = lineKey(l), u = unitPrice(m, l.opt, l.veg, l.tops), d = describe(l);
       return `<div class="line">
         <div class="line-name">${m.emoji} ${m.name}</div>
-        <div class="line-price">${money(u*l.qty)}</div>
-        <small class="line-meta">${d ? d + " · " : ""}${money(u)} للقطعة</small>
+        <div class="line-price">${money(linePrice(l))}</div>
+        <small class="line-meta">${l.pcs ? d : `${d ? d + " · " : ""}${money(u)} للقطعة`}</small>
         <div class="ctrl">
           <div class="qty">
             <button data-dec="${k}" aria-label="إنقاص ${m.name}">−</button>
@@ -1058,7 +1249,8 @@ function sendWhatsApp(){
   const line = "----------------";
   const items = cart.map(l => {
     const m = find(l.id), d = describe(l);
-    return `${l.qty}× ${m.name}${d ? ` (${d})` : ""} - ${moneyLBP(unitPrice(m, l.opt, l.veg, l.tops) * l.qty)}`;
+    if(l.pcs) return `${DZ_TXT.kind(shortName(m))}: ${l.qty} ${DZ_TXT.pcs}${l.qty >= 12 ? ` (${d})` : ""} - ${moneyLBP(linePrice(l))}`;
+    return `${l.qty}× ${m.name}${d ? ` (${d})` : ""} - ${moneyLBP(linePrice(l))}`;
   }).join("\n");
   const notes = $("#notes").value.trim();
   const delivery = mode === "delivery";
@@ -1114,6 +1306,15 @@ document.addEventListener("click", e => {
     refreshCard(id, `[data-opt="${id}|${key}"]`);
   }
   if(t.hasAttribute("data-map-toggle")) toggleLiveMap(t);
+  if(t.dataset.dzOpen){ openDozen(t.dataset.dzOpen); return; }
+  if(t.dataset.dzDozen){ changeBox(t.dataset.dzDozen, 12); return; }
+  if(t.dataset.dzInc){ changeBox(t.dataset.dzInc, 1); return; }
+  if(t.dataset.dzDec){ changeBox(t.dataset.dzDec, -1); return; }
+  if(t.dataset.dzClear){ if(dzTab === "one") box = {}; else mix = {}; paintBox(); return; }
+  if(t.dataset.dzAdd){ addBoxToCart(t); return; }
+  if(t.dataset.dzTab){ setDzTab(t.dataset.dzTab); return; }
+  if(t.dataset.mxInc){ changeMix(t.dataset.mxInc, 1); return; }
+  if(t.dataset.mxDec){ changeMix(t.dataset.mxDec, -1); return; }
   if(t.dataset.build){ openBuilder(t.dataset.build); return; }
   if(t.dataset.pzType){ pickPizza(t.dataset.pzType); paintPizza(true); return; }
   if(t.dataset.pzSize){ bld.opt = t.dataset.pzSize; paintPizza(); return; }
