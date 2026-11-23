@@ -1218,20 +1218,32 @@ function sendWhatsApp(){
   if(!cart.length) return;
   if(!validate(true)){ $("#address").focus(); return; }
   const line = "----------------";
+  const moneyLBP = n => n.toLocaleString("en-US") + " ل.ل.";   // Arabic currency in the WhatsApp message
+  // The WhatsApp order is always written in Arabic, whatever the page language
+  const arName = m => m.ar.replace(/^دزينة\s+/, "");
+  const descAr = l => {
+    const m = find(l.id);
+    if(l.pcs) return [Math.floor(l.qty / 12) ? `${Math.floor(l.qty / 12)} دزينة` : "", l.qty % 12 ? `${l.qty % 12} حبة` : ""].filter(Boolean).join(" + ");
+    if(l.mix) return Object.keys(l.mix).map(id => `${l.mix[id]} ${arName(find(id))}`).join("، ");
+    const o = m.opts[optIndex(m, l.opt)];
+    const parts = [o.ar, l.veg ? "مع خضرا" : ""];
+    if(l.tops) parts.push(l.tops.length ? "المكوّنات: " + l.tops.map(k => TOPPINGS.find(t => t.key === k).ar).join("، ") : "بدون مكوّنات");
+    return parts.filter(Boolean).join(" · ");
+  };
   const items = cart.map(l => {
-    const m = find(l.id), d = describe(l);
-    if(l.pcs) return `${DZ_TXT.kind(shortName(m))}: ${l.qty} ${DZ_TXT.pcs}${l.qty >= 12 ? ` (${d})` : ""} - ${moneyLBP(linePrice(l))}`;
-    return `${l.qty}x ${m.name} - ${m.ar}${d ? ` (${d})` : ""} - ${moneyLBP(linePrice(l))}`;
+    const m = find(l.id), d = descAr(l);
+    if(l.pcs) return `معجنات ${arName(m)}: ${l.qty} حبة${l.qty >= 12 ? ` (${d})` : ""} - ${moneyLBP(linePrice(l))}`;
+    return `${l.qty}× ${m.ar}${d ? ` (${d})` : ""} - ${moneyLBP(linePrice(l))}`;
   }).join("\n");
   const notes = $("#notes").value.trim();
   const delivery = mode === "delivery";
-  const msg = `New Order 🥙\n${line}\n${items}\n${line}\n` +
-    `Subtotal: ${moneyLBP(totalPrice())}\n` +
-    (delivery ? `Delivery fee: ${moneyLBP(DELIVERY_FEE)}\n` : "") +
-    `Total: ${moneyLBP(totalPrice() + deliveryFee())} (≈ ${moneyUSD(totalPrice() + deliveryFee())})\n${line}\n` +
-    (delivery ? `Order type: Delivery 🛵\nAddress: ${$("#address").value.trim()}\n` : `Order type: Pickup 🏪 (customer will come to the store)\n`) +
-    (pay === "whish" ? `Payment: Whish ✅ PAID (to ${WHISH_NUMBER})\n` : `Payment: Cash 💵\n`) +
-    `Notes: ${notes || "-"}`;
+  const msg = `طلب جديد 🥙\n${line}\n${items}\n${line}\n` +
+    `المجموع الفرعي: ${moneyLBP(totalPrice())}\n` +
+    (delivery ? `رسوم التوصيل: ${moneyLBP(DELIVERY_FEE)}\n` : "") +
+    `المجموع: ${moneyLBP(totalPrice() + deliveryFee())} (≈ ${moneyUSD(totalPrice() + deliveryFee())})\n${line}\n` +
+    (delivery ? `نوع الطلب: توصيل 🛵\nالعنوان: ${$("#address").value.trim()}\n` : `نوع الطلب: استلام من الفرن 🏪 (الزبون سيأتي إلى الفرن)\n`) +
+    (pay === "whish" ? `الدفع: Whish ✅ مدفوع (إلى ${WHISH_NUMBER})\n` : `الدفع: نقداً 💵\n`) +
+    `ملاحظات: ${notes || "-"}`;
   // A real link click is more reliable than window.open (phones/popup blockers)
   const a = document.createElement("a");
   a.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
